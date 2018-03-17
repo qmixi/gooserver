@@ -41,11 +41,5 @@ exports.signup = function (req, res, next) {
 };
 
 exports.signin = function (req, res, next) {
-		const email = req.body.email;
-		User.findOne({email: email}, function (err, user) {
-				if (err) {
-						return next(err);
-				}
-				res.json({token: tokenForUser(user)});
-		});
+		res.json({ token: tokenForUser(req.user) });
 };
