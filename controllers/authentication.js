@@ -16,25 +16,36 @@ exports.signup = function (req, res, next) {
 		const email = req.body.email;
 		const password = req.body.password;
 		if (!email || !password) {
-				return res.status(422).send({ error: 'You must provide email and password' });
+				return res.status(422).send({error: 'You must provide email and password'});
 		}
-		console.log('email', email, 'password', password);
-		User.findOne({ email: email }, function (err, existingUser) {
-			if (err) { return next(err); }
-			console.log('existingUser', existingUser);
-			if (existingUser) { return res.status(422).send({ error: 'Email is in use' }); }
+		User.findOne({email: email}, function (err, existingUser) {
+				if (err) {
+						return next(err);
+				}
+				if (existingUser) {
+						return res.status(422).send({error: 'Email is in use'});
+				}
 		});
 
 		const user = new User({
 				email: email,
 				password: password
 		});
-		user.save(function(err) {
-			if (err) { return next(err); }
+		user.save(function (err) {
+				if (err) {
+						return next(err);
+				}
 
-			res.json({ token: tokenForUser(user) });
+				res.json({token: tokenForUser(user)});
 		});
+};
 
-
-		// res.send({success: true});
+exports.signin = function (req, res, next) {
+		const email = req.body.email;
+		User.findOne({email: email}, function (err, user) {
+				if (err) {
+						return next(err);
+				}
+				res.json({token: tokenForUser(user)});
+		});
 };
